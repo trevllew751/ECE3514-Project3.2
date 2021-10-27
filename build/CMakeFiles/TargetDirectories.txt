@@ -1,0 +1,6 @@
+/Users/sookha/Desktop/proj3code5-2/P3.2-starter/build/CMakeFiles/rebuild_cache.dir
+/Users/sookha/Desktop/proj3code5-2/P3.2-starter/build/CMakeFiles/edit_cache.dir
+/Users/sookha/Desktop/proj3code5-2/P3.2-starter/build/CMakeFiles/submission.dir
+/Users/sookha/Desktop/proj3code5-2/P3.2-starter/build/CMakeFiles/test.dir
+/Users/sookha/Desktop/proj3code5-2/P3.2-starter/build/CMakeFiles/conv.dir
+/Users/sookha/Desktop/proj3code5-2/P3.2-starter/build/CMakeFiles/student-tests.dir
