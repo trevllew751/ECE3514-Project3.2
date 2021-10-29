@@ -27,7 +27,7 @@ TEST_CASE("test operand", "[InfixConverter]") {
     REQUIRE(ec.isOperand("123"));
     REQUIRE_FALSE(ec.isOperand("1se"));
 
-    REQUIRE(ec.isNotNumericalOperand("a"));
+    REQUIRE(ec.isNotNumericalOperand("@"));
     REQUIRE(ec.isNotNumericalOperand("4a"));
     REQUIRE_FALSE(ec.isNotNumericalOperand("78"));
 }
@@ -41,4 +41,16 @@ TEST_CASE("test calculate", "[InfixConverter]") {
     REQUIRE(std::stod(ec.calculate("12", "2", "^")) == (double)144);
 
     REQUIRE(ec.calculate("12", "0", "/") == "Undefined");
+}
+
+TEST_CASE("test precedence", "[InfixConverter]") {
+    ExpConverter ec;
+    REQUIRE_FALSE(ec.precedence('*', '*'));
+    REQUIRE_FALSE(ec.precedence('+', '*'));
+    REQUIRE_FALSE(ec.precedence('-', '*'));
+    REQUIRE_FALSE(ec.precedence('*', '/'));
+    REQUIRE_FALSE(ec.precedence('/', '*'));
+    REQUIRE_FALSE(ec.precedence('/', '^'));
+    REQUIRE(ec.precedence('/', '+'));
+    REQUIRE(ec.precedence('^', '*'));
 }

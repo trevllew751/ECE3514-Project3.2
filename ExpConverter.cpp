@@ -7,10 +7,12 @@ void ExpConverter::printError(string msg) {
 }
 
 bool ExpConverter::isOperator(char c) {
+    // TODO: Implement support for binary operators
     return c == '+' || c == '-' || c == '/' || c == '*' || c == '^';
 }
 
 bool ExpConverter::isOperator(string s) {
+    // TODO: Implement support for binary operators
     return s == "+" || s == "-" || s == "/" || s == "*" || s == "^";
 }
 
@@ -59,5 +61,15 @@ string ExpConverter::convertInfix(const string &infix) {
 }
 
 bool ExpConverter::precedence(char lOperator, char rOperator) {
-    return false;
+    if (lOperator == rOperator || lOperator == '+' || lOperator == '-') {
+        return false;
+    } else if (lOperator == '*' || lOperator == '/') {
+        if (rOperator == '*' || rOperator == '/' || rOperator == '^') {
+            return false;
+        } else {
+            return true;
+        }
+    } else {
+        return true;
+    }
 }
