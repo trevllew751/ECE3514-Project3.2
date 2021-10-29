@@ -3,27 +3,51 @@
 #include <math.h>
 
 void ExpConverter::printError(string msg) {
-
+    std::cout << msg << std::endl;
 }
 
 bool ExpConverter::isOperator(char c) {
-    return false;
+    return c == '+' || c == '-' || c == '/' || c == '*' || c == '^';
 }
 
 bool ExpConverter::isOperator(string s) {
-    return false;
+    return s == "+" || s == "-" || s == "/" || s == "*" || s == "^";
 }
 
 bool ExpConverter::isOperand(string s) {
-    return false;
+    for (char &c : s) {
+        if (!isdigit(c)) { return false; }
+    }
+    return true;
 }
 
 bool ExpConverter::isNotNumericalOperand(string s) {
+    for (char &c : s) {
+        if (!isdigit(c)) { return true; }
+    }
     return false;
 }
 
 string ExpConverter::calculate(string operand1, string operand2, string opt) {
-    return std::string();
+    double result = std::stod(operand1);
+    double op2 = std::stod(operand2);
+    if (opt == "+") {
+        result += op2;
+    } else if (opt == "-") {
+        result -= op2;
+    } else if (opt == "*") {
+        result *= op2;
+    } else if (opt == "/") {
+        if (op2 == 0) {
+            printError("Error: Division by Zero!");
+            return "Undefined";
+        } else {
+            result /= op2;
+        }
+    } else {
+        result = pow(result, op2);
+    }
+    return to_string(result);
 }
 
 string ExpConverter::evaluatePostfix(const string postfix) {
