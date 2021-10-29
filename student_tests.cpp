@@ -34,13 +34,20 @@ TEST_CASE("test operand", "[InfixConverter]") {
 
 TEST_CASE("test calculate", "[InfixConverter]") {
     ExpConverter ec;
-    REQUIRE(std::stod(ec.calculate("12", "12", "+")) == (double)24);
-    REQUIRE(std::stod(ec.calculate("12", "12", "-")) == (double)0);
-    REQUIRE(std::stod(ec.calculate("12", "12", "*")) == (double)144);
-    REQUIRE(std::stod(ec.calculate("12", "12", "/")) == (double)1);
-    REQUIRE(std::stod(ec.calculate("12", "2", "^")) == (double)144);
+    REQUIRE(ec.calculate("12", "12", "+") == "24");
+    REQUIRE(ec.calculate("12", "12", "-") == "0");
+    REQUIRE(ec.calculate("12", "12", "*") == "144");
+    REQUIRE(ec.calculate("12", "12", "/") == "1");
+    REQUIRE(ec.calculate("12", "2", "^") == "144");
 
     REQUIRE(ec.calculate("12", "0", "/") == "Undefined");
+}
+
+TEST_CASE("test evaluatePostfix", "[InfixConverter]") {
+    ExpConverter ec;
+    REQUIRE(ec.evaluatePostfix("3 4 * 3 / 7 - 56 30 - +") == "23");
+    REQUIRE(ec.evaluatePostfix("7 9 * 5 5 / / 55 98 * + 10 /") == "545.3");
+    REQUIRE(ec.evaluatePostfix("5 6 + 14 7 - * 5 /") == "15.4");
 }
 
 TEST_CASE("test precedence", "[InfixConverter]") {

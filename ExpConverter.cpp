@@ -49,14 +49,98 @@ string ExpConverter::calculate(string operand1, string operand2, string opt) {
     } else {
         result = pow(result, op2);
     }
-    return to_string(result);
+    std::string trimmed = to_string(result);
+    trimmed.erase(trimmed.find_last_not_of('0') + 1, std::string::npos);
+    if (trimmed.back() == '.') {
+        return trimmed.substr(0, trimmed.size() - 1);
+    }
+    return trimmed;
 }
 
 string ExpConverter::evaluatePostfix(const string postfix) {
-    return std::string();
+    Stack<std::string> operands;
+    std::vector<std::string> tokens;
+    std::string temp;
+    std::string op1;
+    std::string op2;
+    for (char c : postfix) {
+        if (!isspace(c)) {
+            temp += c;
+        } else {
+            tokens.push_back(temp);
+            temp = "";
+        }
+    }
+    if (!temp.empty()) {
+        tokens.push_back(temp);
+    }
+    for (std::string &s : tokens) {
+        if ((isOperand(s) || isNotNumericalOperand(s)) && !isOperator(s)) {
+            operands.push(s);
+        } else {
+            op2 = operands.peek();
+            operands.pop();
+            op1 = operands.peek();
+            operands.pop();
+            operands.push(calculate(op1, op2, s));
+        }
+    }
+    return operands.peek();
 }
 
 string ExpConverter::convertInfix(const string &infix) {
+    Stack<std::string> operators;
+    std::string temp;
+    std::string result;
+    std::vector<std::string> tokens;
+    int numOpenParen = 0;
+    int numClosParen = 0;
+    int numOperators = 0;
+    int numOperands = 0;
+    for (char c : infix) {
+        if (!isspace(c)) {
+            if (c == '(') {
+                tokens.push_back("(");
+                numOpenParen++;
+            } else if (c == ')') {
+                tokens.push_back(")");
+                numClosParen++;
+            } else {
+                temp += c;
+            }
+        } else {
+            tokens.push_back(temp);
+            temp = "";
+        }
+    }
+    if (!temp.empty()) { tokens.push_back(temp); }
+    if (numOpenParen != numClosParen) {
+        if (numOpenParen < numClosParen) {
+            printError("Error: Missing left parenthesis!");
+        } else {
+            printError("Error: Missing right parenthesis!");
+        }
+        return "";
+    }
+    for (std::string &s : tokens) {
+        if (isOperator(s)) {
+            numOperators++;
+            operators.push(s);
+        } else if (isOperand(s) || isNotNumericalOperand(s)) {
+            result += s;
+            numOperands++;
+        } else {
+            printError("Error: Invalid input character!");
+        }
+    }
+    if (numOperands != numOperators + 1) {
+        if (numOperands <= numOperators) {
+            printError("Error: Too few operands!");
+        } else {
+            printError("Error: Stack has more than one operand left in!");
+        }
+        return "";
+    }
     return std::string();
 }
 
