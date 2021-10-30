@@ -43,7 +43,6 @@ string ExpConverter::calculate(string operand1, string operand2, string opt) {
             result *= op2;
         } else if (opt == "/") {
             if (op2 == 0) {
-                printError("Error: Division by Zero!");
                 return "Undefined";
             } else {
                 result /= op2;
@@ -115,7 +114,15 @@ string ExpConverter::convertInfix(const string &infix) {
                 tokens.push_back(")");
                 numClosParen++;
             } else {
-                temp += c;
+                if (isOperator(c)) {
+                    if (!temp.empty()) {
+                        tokens.push_back(temp);
+                    }
+                    tokens.push_back(std::string(1, c));
+                    temp.clear();
+                } else {
+                    temp += c;
+                }
             }
         } else {
             if (!temp.empty()) {
@@ -167,18 +174,20 @@ string ExpConverter::convertInfix(const string &infix) {
         result += operators.peek() + " ";
         operators.pop();
     }
+    result.pop_back();
     if (numOperands != numOperators + 1) {
         if (numOperands <= numOperators) {
-            printError("Error: Too few operands!");
+            printError(result + " Error: Too few operands!");
         } else {
             printError("Error: Stack has more than one operand left in!");
         }
         return "";
     }
     if (evaluatePostfix(result) == "Undefined") {
+        printError(result + " Error: Division by Zero!");
         return "";
     }
-    return result.substr(0, result.size() - 1);
+    return result;
 }
 
 bool ExpConverter::precedence(char lOperator, char rOperator) {
