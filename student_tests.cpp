@@ -28,6 +28,7 @@ TEST_CASE("test operand", "[InfixConverter]") {
     REQUIRE_FALSE(ec.isOperand("1se"));
 
     REQUIRE_FALSE(ec.isNotNumericalOperand("@"));
+    REQUIRE_FALSE(ec.isNotNumericalOperand("_8a"));
     REQUIRE(ec.isNotNumericalOperand("4a"));
     REQUIRE_FALSE(ec.isNotNumericalOperand("78"));
 }

@@ -26,7 +26,9 @@ bool ExpConverter::isOperand(string s) {
 
 bool ExpConverter::isNotNumericalOperand(string s) {
     for (char &c : s) {
-        if (!isdigit(c) && isalpha(c)) { return true; }
+        if (!isdigit(c)) {
+            return isalpha(c);
+        }
     }
     return false;
 }
