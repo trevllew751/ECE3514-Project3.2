@@ -25,36 +25,40 @@ bool ExpConverter::isOperand(string s) {
 
 bool ExpConverter::isNotNumericalOperand(string s) {
     for (char &c : s) {
-        if (!isdigit(c)) { return true; }
+        if (!isdigit(c) && isalpha(c)) { return true; }
     }
     return false;
 }
 
 string ExpConverter::calculate(string operand1, string operand2, string opt) {
-    double result = std::stod(operand1);
-    double op2 = std::stod(operand2);
-    if (opt == "+") {
-        result += op2;
-    } else if (opt == "-") {
-        result -= op2;
-    } else if (opt == "*") {
-        result *= op2;
-    } else if (opt == "/") {
-        if (op2 == 0) {
-            printError("Error: Division by Zero!");
-            return "Undefined";
+    try {
+        double result = std::stod(operand1);
+        double op2 = std::stod(operand2);
+        if (opt == "+") {
+            result += op2;
+        } else if (opt == "-") {
+            result -= op2;
+        } else if (opt == "*") {
+            result *= op2;
+        } else if (opt == "/") {
+            if (op2 == 0) {
+                printError("Error: Division by Zero!");
+                return "Undefined";
+            } else {
+                result /= op2;
+            }
         } else {
-            result /= op2;
+            result = pow(result, op2);
         }
-    } else {
-        result = pow(result, op2);
+        std::string trimmed = to_string(result);
+        trimmed.erase(trimmed.find_last_not_of('0') + 1, std::string::npos);
+        if (trimmed.back() == '.') {
+            return trimmed.substr(0, trimmed.size() - 1);
+        }
+        return trimmed;
+    } catch (...) {
+        return "";
     }
-    std::string trimmed = to_string(result);
-    trimmed.erase(trimmed.find_last_not_of('0') + 1, std::string::npos);
-    if (trimmed.back() == '.') {
-        return trimmed.substr(0, trimmed.size() - 1);
-    }
-    return trimmed;
 }
 
 string ExpConverter::evaluatePostfix(const string postfix) {
@@ -103,14 +107,20 @@ string ExpConverter::convertInfix(const string &infix) {
                 tokens.push_back("(");
                 numOpenParen++;
             } else if (c == ')') {
+                if (!temp.empty()) {
+                    tokens.push_back(temp);
+                    temp = "";
+                }
                 tokens.push_back(")");
                 numClosParen++;
             } else {
                 temp += c;
             }
         } else {
-            tokens.push_back(temp);
-            temp = "";
+            if (!temp.empty()) {
+                tokens.push_back(temp);
+                temp = "";
+            }
         }
     }
     if (!temp.empty()) { tokens.push_back(temp); }
@@ -125,13 +135,36 @@ string ExpConverter::convertInfix(const string &infix) {
     for (std::string &s : tokens) {
         if (isOperator(s)) {
             numOperators++;
+            while (!operators.isEmpty()
+                   && !precedence(s.at(0), operators.peek().at(0))
+                   && operators.peek() != "(") {
+                result += operators.peek() + " ";
+                operators.pop();
+            }
             operators.push(s);
+        } else if (s == "(") {
+            operators.push("(");
+        } else if (s == ")") {
+            while (true) {
+                if (operators.peek() == "(") {
+                    operators.pop();
+                    break;
+                } else {
+                    result += operators.peek() + " ";
+                    operators.pop();
+                }
+            }
         } else if (isOperand(s) || isNotNumericalOperand(s)) {
-            result += s;
+            result += s + " ";
             numOperands++;
         } else {
             printError("Error: Invalid input character!");
+            return "";
         }
+    }
+    while (!operators.isEmpty()) {
+        result += operators.peek() + " ";
+        operators.pop();
     }
     if (numOperands != numOperators + 1) {
         if (numOperands <= numOperators) {
@@ -141,7 +174,10 @@ string ExpConverter::convertInfix(const string &infix) {
         }
         return "";
     }
-    return std::string();
+    if (evaluatePostfix(result) == "Undefined") {
+        return "";
+    }
+    return result.substr(0, result.size() - 1);
 }
 
 bool ExpConverter::precedence(char lOperator, char rOperator) {

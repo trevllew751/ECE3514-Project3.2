@@ -50,6 +50,24 @@ TEST_CASE("test evaluatePostfix", "[InfixConverter]") {
     REQUIRE(ec.evaluatePostfix("5 6 + 14 7 - * 5 /") == "15.4");
 }
 
+TEST_CASE("test convertInfix", "[InfixConverter]") {
+    ExpConverter ec;
+    REQUIRE(ec.convertInfix("(3 * 4) / 3 - 7 + (56 - 30)") == "3 4 * 3 / 7 - 56 30 - +");
+    REQUIRE(ec.convertInfix("( ( 7 * 9 ) / ( 5 / 5 ) + 55 * 98 ) / 10") == "7 9 * 5 5 / / 55 98 * + 10 /");
+    REQUIRE(ec.convertInfix("(5 + 6) * (14 - 7) / 5") == "5 6 + 14 7 - * 5 /");
+    REQUIRE(ec.convertInfix("(a + b) - 5") == "a b + 5 -");
+    REQUIRE(ec.convertInfix("a + b * (c ^ d - e) ^ (f + g * h) - i") == "a b c d ^ e - f g h * + ^ * + i -");
+
+    REQUIRE(ec.convertInfix("(12 + 6 * 4 / 5 ").empty());
+    REQUIRE(ec.convertInfix("a + b) * c").empty());
+    REQUIRE(ec.convertInfix("45 @ 8 + 2").empty());
+    REQUIRE(ec.convertInfix("56 / 0 ").empty());
+    REQUIRE(ec.convertInfix("(5 * 10) / (6 + 3 - 9)").empty());
+    REQUIRE(ec.convertInfix("+ +").empty());
+    REQUIRE(ec.convertInfix("/ *").empty());
+    REQUIRE(ec.convertInfix("(4 + 6) 7").empty());
+}
+
 TEST_CASE("test precedence", "[InfixConverter]") {
     ExpConverter ec;
     REQUIRE_FALSE(ec.precedence('*', '*'));
