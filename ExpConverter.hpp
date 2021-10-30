@@ -33,7 +33,7 @@ public:
     /** print an error message for the errors detected in parsing or evaluating process
      @param msg - an error message for an error detected in the process of parsing an infix espression or evaluating a postfix expression
      */
-    void printError(string msg);
+    std::string printError(string msg);
 
     /** check if a character is a valid arithematic operator
      @param c - a character to check if it is a valid arithmetic operator

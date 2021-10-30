@@ -2,8 +2,9 @@
 #include "Stack.hpp"
 #include <math.h>
 
-void ExpConverter::printError(string msg) {
+std::string ExpConverter::printError(string msg) {
     std::cout << msg << std::endl;
+    return msg;
 }
 
 bool ExpConverter::isOperator(char c) {
