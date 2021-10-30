@@ -52,7 +52,7 @@ TEST_CASE("test evaluatePostfix", "[InfixConverter]") {
 
 TEST_CASE("test convertInfix", "[InfixConverter]") {
     ExpConverter ec;
-    REQUIRE(ec.convertInfix("(3 * 4) / 3 - 7 + (56 - 30)") == "3 4 * 3 / 7 - 56 30 - +");
+    REQUIRE(ec.convertInfix("(3.5 * 4) / 3 - 7 + (56 - 30)") == "3.5 4 * 3 / 7 - 56 30 - +");
     REQUIRE(ec.convertInfix("( ( 7 * 9 ) / ( 5 / 5 ) + 55 * 98 ) / 10") == "7 9 * 5 5 / / 55 98 * + 10 /");
     REQUIRE(ec.convertInfix("(5 + 6) * (14 - 7) / 5") == "5 6 + 14 7 - * 5 /");
     REQUIRE(ec.convertInfix("(a + b) - 5") == "a b + 5 -");

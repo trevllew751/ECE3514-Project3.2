@@ -19,7 +19,7 @@ bool ExpConverter::isOperator(string s) {
 
 bool ExpConverter::isOperand(string s) {
     for (char &c : s) {
-        if (!isdigit(c)) { return false; }
+        if (!isdigit(c) && c != '.') { return false; }
     }
     return true;
 }
