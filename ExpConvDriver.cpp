@@ -8,14 +8,23 @@
 #include <iostream>
 #include <string.h>
 
+void evaluateLine(std::string line, ExpConverter &ec);
+
 int main(int argc, char *argv[]) {
     ExpConverter ec;
     std::string line;
-    std::string postFix;
-    std::string evaluated;
     // File type
     if (argc == 3 && strcmp(argv[1], "-f") == 0) {
-
+        std::ifstream file(argv[2]);
+        if (file.is_open()) {
+            while (getline(file, line)) {
+                std::cout << "Infix Expression:\n" << line << std::endl;
+                evaluateLine(line, ec);
+            }
+        } else {
+            std::cout << "Could not open file.";
+            return EXIT_FAILURE;
+        }
     } else if (argc == 1) { // Interactive type
         while (true) {
             std::cout << "Infix Expression:" << std::endl;
@@ -23,19 +32,25 @@ int main(int argc, char *argv[]) {
             if (line == "exit") {
                 break;
             }
-            postFix = ec.convertInfix(line);
-            if (!postFix.empty()) {
-                std::cout << "Postfix Expression:" << std::endl;
-                evaluated = ec.evaluatePostfix(postFix);
-                if (!evaluated.empty()) {
-                    std::cout << postFix + " = " + evaluated << std::endl << std::endl;
-                } else {
-                    std::cout << postFix << std::endl << std::endl;
-                }
-            } else {
-                std::cout << std::endl;
-            }
+            evaluateLine(line, ec);
         }
     }
     return EXIT_SUCCESS;
+}
+
+void evaluateLine(std::string line, ExpConverter &ec) {
+    std::string postFix;
+    std::string evaluated;
+    postFix = ec.convertInfix(line);
+    if (!postFix.empty()) {
+        std::cout << "Postfix Expression:" << std::endl;
+        evaluated = ec.evaluatePostfix(postFix);
+        if (!evaluated.empty()) {
+            std::cout << postFix + " = " + evaluated << std::endl << std::endl;
+        } else {
+            std::cout << postFix << std::endl << std::endl;
+        }
+    } else {
+        std::cout << std::endl;
+    }
 }
