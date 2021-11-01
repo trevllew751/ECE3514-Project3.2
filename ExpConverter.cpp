@@ -18,19 +18,40 @@ bool ExpConverter::isOperator(string s) {
 }
 
 bool ExpConverter::isOperand(string s) {
+    bool point = false;
     for (char &c : s) {
-        if (!isdigit(c) && c != '.') { return false; }
+        if (!isalnum(c)) {
+            if (c == '.') {
+                if (point) {
+                    return false;
+                } else {
+                    point = true;
+                }
+            } else {
+                return false;
+            }
+        }
     }
     return true;
 }
 
 bool ExpConverter::isNotNumericalOperand(string s) {
+    bool point = false;
+    bool alpha = false;
     for (char &c : s) {
-        if (!isdigit(c)) {
-            return isalpha(c);
+        if (isalpha(c)) {
+            alpha = true;
+        } else if (!isdigit(c)) {
+            if (c == '.' && point) {
+                return false;
+            } else if (c == '.' && !point){
+                point = true;
+            } else {
+                return false;
+            }
         }
     }
-    return false;
+    return alpha;
 }
 
 string ExpConverter::calculate(string operand1, string operand2, string opt) {
@@ -69,6 +90,7 @@ string ExpConverter::evaluatePostfix(const string postfix) {
     std::string temp;
     std::string op1;
     std::string op2;
+    std::string calculated;
     for (char c : postfix) {
         if (!isspace(c)) {
             temp += c;
@@ -88,7 +110,12 @@ string ExpConverter::evaluatePostfix(const string postfix) {
             operands.pop();
             op1 = operands.peek();
             operands.pop();
-            operands.push(calculate(op1, op2, s));
+            calculated = calculate(op1, op2, s);
+            if (calculated == "Undefined") {
+                return postfix;
+            } else {
+                operands.push(calculated);
+            }
         }
     }
     return operands.peek();
@@ -164,7 +191,7 @@ string ExpConverter::convertInfix(const string &infix) {
                     operators.pop();
                 }
             }
-        } else if (isOperand(s) || isNotNumericalOperand(s)) {
+        } else if (isOperand(s)/* || isNotNumericalOperand(s)*/) {
             result += s + " ";
             numOperands++;
         } else {
@@ -185,7 +212,7 @@ string ExpConverter::convertInfix(const string &infix) {
         }
         return "";
     }
-    if (evaluatePostfix(result) == "Undefined") {
+    if (evaluatePostfix(result) == result) {
         printError(result + " Error: Division by Zero!");
         return "";
     }

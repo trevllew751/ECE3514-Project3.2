@@ -30,6 +30,7 @@ int main(int argc, char *argv[]) {
             std::cout << "Infix Expression:" << std::endl;
             getline(std::cin, line);
             if (line == "exit") {
+                std::cout << "Bye!";
                 break;
             }
             evaluateLine(line, ec);
@@ -41,9 +42,9 @@ int main(int argc, char *argv[]) {
 void evaluateLine(std::string line, ExpConverter &ec) {
     std::string postFix;
     std::string evaluated;
+    std::cout << "Postfix Expression:" << std::endl;
     postFix = ec.convertInfix(line);
     if (!postFix.empty()) {
-        std::cout << "Postfix Expression:" << std::endl;
         evaluated = ec.evaluatePostfix(postFix);
         if (!evaluated.empty()) {
             std::cout << postFix + " = " + evaluated << std::endl << std::endl;
@@ -51,6 +52,6 @@ void evaluateLine(std::string line, ExpConverter &ec) {
             std::cout << postFix << std::endl << std::endl;
         }
     } else {
-        std::cout << std::endl;
+        std::cout << /*"Postfix Expression:" << std::endl <<*/ std::endl;
     }
 }

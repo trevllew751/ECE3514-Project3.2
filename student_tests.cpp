@@ -25,12 +25,24 @@ TEST_CASE("test operand", "[InfixConverter]") {
     ExpConverter ec;
     REQUIRE(ec.isOperand("1"));
     REQUIRE(ec.isOperand("123"));
-    REQUIRE_FALSE(ec.isOperand("1se"));
+    REQUIRE(ec.isOperand("1.34"));
+    REQUIRE(ec.isOperand("1se"));
+    REQUIRE(ec.isOperand("abcd"));
+    REQUIRE_FALSE(ec.isOperand("1.2.4.3"));
+    REQUIRE_FALSE(ec.isOperand("b_1"));
+    REQUIRE_FALSE(ec.isOperand("alph4_"));
+    REQUIRE_FALSE(ec.isOperand("c-2"));
+    REQUIRE_FALSE(ec.isOperand("!$%@#&"));
 
     REQUIRE_FALSE(ec.isNotNumericalOperand("@"));
     REQUIRE_FALSE(ec.isNotNumericalOperand("_8a"));
     REQUIRE(ec.isNotNumericalOperand("4a"));
+    REQUIRE(ec.isNotNumericalOperand("4.9a"));
+    REQUIRE(ec.isNotNumericalOperand("abcd"));
     REQUIRE_FALSE(ec.isNotNumericalOperand("78"));
+    REQUIRE_FALSE(ec.isNotNumericalOperand("78.9.9p"));
+    REQUIRE_FALSE(ec.isNotNumericalOperand("&.99_p"));
+    REQUIRE_FALSE(ec.isNotNumericalOperand("A&().99p"));
 }
 
 TEST_CASE("test calculate", "[InfixConverter]") {
