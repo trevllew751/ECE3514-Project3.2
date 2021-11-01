@@ -83,12 +83,34 @@ TEST_CASE("test convertInfix", "[InfixConverter]") {
 
 TEST_CASE("test precedence", "[InfixConverter]") {
     ExpConverter ec;
-    REQUIRE_FALSE(ec.precedence('*', '*'));
+
+    REQUIRE_FALSE(ec.precedence('+', '+'));
+    REQUIRE_FALSE(ec.precedence('+', '-'));
     REQUIRE_FALSE(ec.precedence('+', '*'));
+    REQUIRE_FALSE(ec.precedence('+', '/'));
+    REQUIRE_FALSE(ec.precedence('+', '^'));
+
+    REQUIRE_FALSE(ec.precedence('-', '+'));
+    REQUIRE_FALSE(ec.precedence('-', '-'));
     REQUIRE_FALSE(ec.precedence('-', '*'));
+    REQUIRE_FALSE(ec.precedence('-', '/'));
+    REQUIRE_FALSE(ec.precedence('-', '^'));
+
+    REQUIRE(ec.precedence('*', '+'));
+    REQUIRE(ec.precedence('*', '-'));
+    REQUIRE_FALSE(ec.precedence('*', '*'));
     REQUIRE_FALSE(ec.precedence('*', '/'));
-    REQUIRE_FALSE(ec.precedence('/', '*'));
-    REQUIRE_FALSE(ec.precedence('/', '^'));
+    REQUIRE_FALSE(ec.precedence('*', '^'));
+
     REQUIRE(ec.precedence('/', '+'));
+    REQUIRE(ec.precedence('/', '-'));
+    REQUIRE_FALSE(ec.precedence('/', '*'));
+    REQUIRE_FALSE(ec.precedence('/', '/'));
+    REQUIRE_FALSE(ec.precedence('/', '^'));
+
+    REQUIRE(ec.precedence('^', '+'));
+    REQUIRE(ec.precedence('^', '-'));
     REQUIRE(ec.precedence('^', '*'));
+    REQUIRE(ec.precedence('^', '/'));
+    REQUIRE_FALSE(ec.precedence('^', '^'));
 }
