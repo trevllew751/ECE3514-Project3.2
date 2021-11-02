@@ -42,16 +42,16 @@ int main(int argc, char *argv[]) {
 void evaluateLine(std::string line, ExpConverter &ec) {
     std::string postFix;
     std::string evaluated;
-    std::cout << "Postfix Expression:" << std::endl;
     postFix = ec.convertInfix(line);
     if (!postFix.empty()) {
-        evaluated = ec.evaluatePostfix(postFix);
+//        evaluated = ec.evaluatePostfix(postFix);
+        std::cout << "Postfix Expression:" << std::endl;
         if (!evaluated.empty()) {
-            std::cout << postFix + " = " + evaluated << std::endl << std::endl;
+            std::cout << postFix << std::endl << std::endl;
         } else {
             std::cout << postFix << std::endl << std::endl;
         }
     } else {
-        std::cout << /*"Postfix Expression:" << std::endl <<*/ std::endl;
+        std::cout << std::endl;
     }
 }

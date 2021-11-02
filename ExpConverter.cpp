@@ -1,6 +1,7 @@
 #include "ExpConverter.hpp"
 #include "Stack.hpp"
 #include <math.h>
+#include <algorithm>
 
 std::string ExpConverter::printError(string msg) {
     std::cout << msg << std::endl;
@@ -73,11 +74,10 @@ string ExpConverter::calculate(string operand1, string operand2, string opt) {
         } else {
             result = pow(result, op2);
         }
-        std::string trimmed = to_string(result);
-        trimmed.erase(trimmed.find_last_not_of('0') + 1, std::string::npos);
-        if (trimmed.back() == '.') {
-            return trimmed.substr(0, trimmed.size() - 1);
-        }
+        std::stringstream ss;
+        std::string trimmed;
+        ss << result;
+        trimmed = ss.str();
         return trimmed;
     } catch (...) {
         return "";
@@ -85,6 +85,9 @@ string ExpConverter::calculate(string operand1, string operand2, string opt) {
 }
 
 string ExpConverter::evaluatePostfix(const string postfix) {
+    if (postfix.empty()) {
+        return "";
+    }
     Stack<std::string> operands;
     std::vector<std::string> tokens;
     std::string temp;
@@ -161,12 +164,19 @@ string ExpConverter::convertInfix(const string &infix) {
         }
     }
     if (!temp.empty()) { tokens.push_back(temp); }
+    if (std::all_of(tokens.begin(), tokens.end(), [this](std::string s){return isOperand(s);})) {
+        for (auto &s : tokens) {
+            result += s;
+        }
+        return result + " = " + result;
+    }
     if (numOpenParen != numClosParen) {
         if (numOpenParen < numClosParen) {
             printError("Error: Missing left parenthesis!");
         } else {
             printError("Error: Missing right parenthesis!");
         }
+        std::cout << "Postfix Expression:" << std::endl;
         return "";
     }
     for (std::string &s : tokens) {
@@ -196,6 +206,7 @@ string ExpConverter::convertInfix(const string &infix) {
             numOperands++;
         } else {
             printError("Error: Invalid input character!");
+            std::cout << "Postfix Expression:" << std::endl;
             return "";
         }
     }
@@ -205,6 +216,7 @@ string ExpConverter::convertInfix(const string &infix) {
     }
     result.pop_back();
     if (numOperands != numOperators + 1) {
+        std::cout << "Postfix Expression:" << std::endl;
         if (numOperands <= numOperators) {
             printError(result + " Error: Too few operands!");
         } else {
@@ -212,11 +224,15 @@ string ExpConverter::convertInfix(const string &infix) {
         }
         return "";
     }
-    if (evaluatePostfix(result) == result) {
+    std::string evaluated = evaluatePostfix(result);
+    if (evaluated == result) {
+        std::cout << "Postfix Expression:" << std::endl;
         printError(result + " Error: Division by Zero!");
         return "";
+    } else if (evaluated.empty()) {
+        return result;
     }
-    return result;
+    return result + " = " + evaluated;
 }
 
 bool ExpConverter::precedence(char lOperator, char rOperator) {

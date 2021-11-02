@@ -65,11 +65,12 @@ TEST_CASE("test evaluatePostfix", "[InfixConverter]") {
 
 TEST_CASE("test convertInfix", "[InfixConverter]") {
     ExpConverter ec;
-    REQUIRE(ec.convertInfix("(3.5 * 4) / 3 - 7 + (56 - 30)") == "3.5 4 * 3 / 7 - 56 30 - +");
-    REQUIRE(ec.convertInfix("((7*9)/(5/5)+55*98)/10") == "7 9 * 5 5 / / 55 98 * + 10 /");
-    REQUIRE(ec.convertInfix("(5 + 6) * (14 - 7) / 5") == "5 6 + 14 7 - * 5 /");
+    REQUIRE(ec.convertInfix("(3 * 4) / 3 - 7 + (56 - 30)") == "3 4 * 3 / 7 - 56 30 - + = 23");
+    REQUIRE(ec.convertInfix("((7*9)/(5/5)+55*98)/10") == "7 9 * 5 5 / / 55 98 * + 10 / = 545.3");
+    REQUIRE(ec.convertInfix("(5 + 6) * (14 - 7) / 5") == "5 6 + 14 7 - * 5 / = 15.4");
     REQUIRE(ec.convertInfix("(a + b) - 5") == "a b + 5 -");
     REQUIRE(ec.convertInfix("a + b * (c ^ d - e) ^ (f + g * h) - i") == "a b c d ^ e - f g h * + ^ * + i -");
+    REQUIRE(ec.convertInfix("77 77") == "7777 = 7777");
 
     REQUIRE(ec.convertInfix("(12 + 6 * 4 / 5 ").empty());
     REQUIRE(ec.convertInfix("a + b) * c").empty());
